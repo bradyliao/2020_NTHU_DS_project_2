@@ -1,14 +1,49 @@
-//
-//  main.cpp
-//  DS_project_2
-//
-//  Created by Brady Liao on 11/16/20.
-//
-
 #include <iostream>
+#include "helper_functions.cpp"
 
-int main(int argc, const char * argv[]) {
-   // insert code here...
-   std::cout << "Hello, World!\n";
+
+using namespace std ;
+
+
+int main(int argc, const char * argv[])
+{
+   int row, column, battery ;
+   
+   
+   
+   if (argc == 2)
+   {
+      char **floorMap = fileInput(argv[1], row, column, battery) ;
+   }
+   else
+   {
+      return 1 ;
+   }
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    return 0;
 }
