@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string>
 #include <vector>
 #include <queue>
 
@@ -15,21 +16,40 @@ int **fileInput(string fileName, int &rows, int &columns, int &battery, int &cha
 {
    char temp ;
    
-   ifstream input(fileName) ;
+   cout << "input module" << endl ;
+   cout << fileName << endl;
    
-   input >> rows >> columns >> battery;
    
+   ifstream infile ;
+   infile.open(fileName, ios::in) ;
+   
+   
+   
+   
+   if (!infile) {
+      cout << "fail to open file" ;
+   }
+   
+   infile >> rows >> columns >> battery;
+      
+   /*
    if (rows > 1000 || rows <= 0 || columns > 1000 || columns <= 0)
       throw invalid_argument("Row or Column of the floor map is not valid.") ;
+   */
+    
+   
    
    int **floor ;
+   
+   
+   
    floor = new int *[rows] ;
    for (int i = 0; i < rows; i++)
    {
       floor[i] = new int[columns] ;
       for (int j = 0; j < columns; j++)
       {
-         input >> temp ;
+         infile >> temp ;
          if (temp == '0')
          {
             floor[i][j] = 0 ;
@@ -46,8 +66,11 @@ int **fileInput(string fileName, int &rows, int &columns, int &battery, int &cha
          }
       }
       //consume new line character
-      input >> temp ;
+      infile >> temp ;
    }
+   
+   
+   
    return floor ;
 }
 
@@ -106,11 +129,19 @@ int main(int argc, const char * argv[])
    int **floorOriginal ;
    
    
-   
    if (argc == 2)
       floorOriginal = fileInput(argv[1], rows, columns, battery, chargerRow, chargerColumn) ;
    else
       return 1 ;
+   
+
+   
+   
+   //test
+   cout << chargerRow << " " << columns ;
+   
+   
+   
    
    
    //array for mapping floor
@@ -134,8 +165,31 @@ int main(int argc, const char * argv[])
             Node temp = Node(i, j, floorOriginal[i][j]) ;
             floorNodes[i][j] = &temp ;
          }
+         else
+         {
+            floorNodes[i][j] = NULL ;
+         }
       }
    }
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   /*
+   
    
    
    // root
@@ -228,13 +282,21 @@ int main(int argc, const char * argv[])
    {
       for (int j = 0; j < 0; j++)
       {
-         cout << floorNodes[i][j]->status << " " ;
+         if(floorNodes[i][j])
+         {
+            cout << floorNodes[i][j]->status << " " ;
+         }
+         else
+         {
+            cout << " " ;
+         }
+         
       }
       cout << '\n' ;
    }
    
    
-   
+   */
    
    return 0;
 }
