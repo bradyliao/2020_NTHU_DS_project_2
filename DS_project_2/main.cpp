@@ -10,19 +10,11 @@ using namespace std ;
 
 
 
-
-
-int **fileInput(string fileName, int &rows, int &columns, int &battery, int &chargerRow, int &chargerColumn)
+void **fileInput(string fileName, int **floorOriginal, int &rows, int &columns, int &battery, int &chargerRow, int &chargerColumn)
 {
    char temp ;
-   
-   cout << "input module" << endl ;
-   cout << fileName << endl;
-   
-   
-   ifstream infile ;
-   infile.open(fileName, ios::in) ;
-   
+
+   ifstream infile(fileName) ;
    
    
    
@@ -31,48 +23,88 @@ int **fileInput(string fileName, int &rows, int &columns, int &battery, int &cha
    }
    
    infile >> rows >> columns >> battery;
-      
-   /*
-   if (rows > 1000 || rows <= 0 || columns > 1000 || columns <= 0)
-      throw invalid_argument("Row or Column of the floor map is not valid.") ;
-   */
-    
-   
-   
-   int **floor ;
+   cout << rows << " " << columns << " " << battery << endl ;
    
    
    
-   floor = new int *[rows] ;
-   for (int i = 0; i < rows; i++)
+   floorOriginal = new int*[rows] ;
+   for (int i = 0; i < rows; i++) {
+      floorOriginal[i] = new int[columns] ;
+   }
+   
+   
+   int i = 0 , j=0 ;
+   
+   while (infile)
    {
-      floor[i] = new int[columns] ;
+      infile >> temp ;
+      
+      if (temp == '\n')
+      {
+         i++ ;
+         j = 0 ;
+      }
+      
+      if (temp == '0')
+      {
+         floorOriginal[i][j] = 0 ;
+         j++ ;
+      }
+      if (temp == '1')
+      {
+         floorOriginal[i][j] = 1 ;
+         j++ ;
+      }
+      if (temp == 'R')
+      {
+         floorOriginal[i][j] = 3 ;
+         chargerRow = i ;
+         chargerColumn = j ;
+         j++ ;
+      }
+      
+   }
+   
+   
+   
+   /*
+   
+   for (int i = 0; i < rows ; i++)
+   {
+      floorOriginal[i] = new int[columns] ;
       for (int j = 0; j < columns; j++)
       {
          infile >> temp ;
          if (temp == '0')
          {
-            floor[i][j] = 0 ;
+            floorOriginal[i][j] = 0 ;
          }
          if (temp == '1')
          {
-            floor[i][j] = 1 ;
+            floorOriginal[i][j] = 1 ;
          }
          if (temp == 'R')
          {
-            floor[i][j] = 3 ;
-            chargerRow = i ;
-            chargerColumn = j ;
+            floorOriginal[i][j] = 3 ;
+            //chargerRow = i ;
+            //chargerColumn = j ;
          }
       }
-      //consume new line character
-      infile >> temp ;
+      cout << endl ;
+      for (int j = 0; j < columns; j++)
+      cout << floorOriginal[i][j] ;
+      
    }
+    
+    */
+   
+   cout << "end file input" << endl ;
    
    
    
-   return floor ;
+   return 0 ;
 }
+
 
 
 
@@ -100,24 +132,14 @@ public:
 };
 
 
-
+/*
 //build nodes
 void buildNodes(int **floorOriginal, int rows, int columns, int chargerRow, int chargerColumn, Node *root)
 {
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+
    
 }
-
+*/
 
 
 
@@ -130,12 +152,38 @@ int main(int argc, const char * argv[])
    
    
    if (argc == 2)
-      floorOriginal = fileInput(argv[1], rows, columns, battery, chargerRow, chargerColumn) ;
+   {
+      fileInput(argv[1], floorOriginal, rows, columns, battery, chargerRow, chargerColumn) ;
+
+      
+      /*
+      cout << "input module" << endl ;
+      cout << argv[1] << endl;
+      
+      
+      ifstream infile ;
+      infile.open(argv[1], ios::in) ;
+      
+      if (!infile) {
+         cout << "fail to open file" ;
+      }
+      
+      */
+      
+      
+      
+      
+      
+      
+      
+      
+      
+   }
    else
       return 1 ;
    
 
-   
+   /*
    
    //test
    cout << chargerRow << " " << columns ;
@@ -188,7 +236,7 @@ int main(int argc, const char * argv[])
    
    
    
-   /*
+   
    
    
    
