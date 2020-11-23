@@ -9,106 +9,6 @@ using namespace std ;
 
 
 
-
-void **fileInput(string fileName, int **floorOriginal, int &rows, int &columns, int &battery, int &chargerRow, int &chargerColumn)
-{
-   char temp ;
-
-   ifstream infile(fileName) ;
-   
-   
-   
-   if (!infile) {
-      cout << "fail to open file" ;
-   }
-   
-   infile >> rows >> columns >> battery;
-   cout << rows << " " << columns << " " << battery << endl ;
-   
-   
-   
-   floorOriginal = new int*[rows] ;
-   for (int i = 0; i < rows; i++) {
-      floorOriginal[i] = new int[columns] ;
-   }
-   
-   
-   int i = 0 , j=0 ;
-   
-   while (infile)
-   {
-      infile >> temp ;
-      
-      if (temp == '\n')
-      {
-         i++ ;
-         j = 0 ;
-      }
-      
-      if (temp == '0')
-      {
-         floorOriginal[i][j] = 0 ;
-         j++ ;
-      }
-      if (temp == '1')
-      {
-         floorOriginal[i][j] = 1 ;
-         j++ ;
-      }
-      if (temp == 'R')
-      {
-         floorOriginal[i][j] = 3 ;
-         chargerRow = i ;
-         chargerColumn = j ;
-         j++ ;
-      }
-      
-   }
-   
-   
-   
-   /*
-   
-   for (int i = 0; i < rows ; i++)
-   {
-      floorOriginal[i] = new int[columns] ;
-      for (int j = 0; j < columns; j++)
-      {
-         infile >> temp ;
-         if (temp == '0')
-         {
-            floorOriginal[i][j] = 0 ;
-         }
-         if (temp == '1')
-         {
-            floorOriginal[i][j] = 1 ;
-         }
-         if (temp == 'R')
-         {
-            floorOriginal[i][j] = 3 ;
-            //chargerRow = i ;
-            //chargerColumn = j ;
-         }
-      }
-      cout << endl ;
-      for (int j = 0; j < columns; j++)
-      cout << floorOriginal[i][j] ;
-      
-   }
-    
-    */
-   
-   cout << "end file input" << endl ;
-   
-   
-   
-   return 0 ;
-}
-
-
-
-
-
 // classs for each node
 class Node
 {
@@ -118,11 +18,9 @@ public:
       this->row = row ;
       this->column = column ;
       this->status = status ;
-      
    }
    
-// private data of a block
-
+   
    int row, column, status ;
    vector<Node*> adjacentNodes ;
    vector<Node*> ups ;
@@ -132,14 +30,7 @@ public:
 };
 
 
-/*
-//build nodes
-void buildNodes(int **floorOriginal, int rows, int columns, int chargerRow, int chargerColumn, Node *root)
-{
 
-   
-}
-*/
 
 
 
@@ -148,57 +39,79 @@ void buildNodes(int **floorOriginal, int rows, int columns, int chargerRow, int 
 int main(int argc, const char * argv[])
 {
    int rows, columns, battery, chargerRow, chargerColumn ;
-   int **floorOriginal ;
+   int **floorOriginal={}, **floorMapping={} ;
    
    
    if (argc == 2)
    {
-      fileInput(argv[1], floorOriginal, rows, columns, battery, chargerRow, chargerColumn) ;
+      //fileInput(argv[1], floorOriginal, rows, columns, battery, chargerRow, chargerColumn) ;
+      char temp ;
 
+      ifstream infile(argv[1]) ;
       
-      /*
-      cout << "input module" << endl ;
-      cout << argv[1] << endl;
-      
-      
-      ifstream infile ;
-      infile.open(argv[1], ios::in) ;
-      
-      if (!infile) {
+      if (!infile)
+      {
          cout << "fail to open file" ;
       }
       
-      */
+      infile >> rows >> columns >> battery ;
+      infile.get() ;
+      cout << rows << " " << columns << " " << battery << endl ;
       
       
-      
-      
-      
-      
-      
-      
-      
+      floorOriginal = new int*[rows] ;
+
+      for (int i = 0; i < rows ; i++)
+      {
+         floorOriginal[i] = new int[columns] ;
+         for (int j = 0; j < columns; j++)
+         {
+            infile >> temp ;
+            if (temp == '0')
+            {
+               floorOriginal[i][j] = 0 ;
+            }
+            if (temp == '1')
+            {
+               floorOriginal[i][j] = 1 ;
+            }
+            if (temp == 'R')
+            {
+               floorOriginal[i][j] = 3 ;
+               chargerRow = i ;
+               chargerColumn = j ;
+            }
+         }
+         infile.get() ;
+      }
+
    }
    else
       return 1 ;
    
-
-   /*
    
    //test
-   cout << chargerRow << " " << columns ;
-   
-   
-   
-   
+   //cout << chargerRow << " " << chargerColumn << endl  ;
    
    //array for mapping floor
-   int **floorMapping = new int *[rows] ;
-   for (int i = 0; i < rows; i++)
-      for (int j = 0; j < columns; j++)
-         floorMapping[i][j] = floorOriginal[i][j] ;
-
+   floorMapping = new int *[rows] ;
    
+   for (int i = 0; i < rows; i++)
+   {
+      floorMapping[i] = new int[columns] ;
+      
+      for (int j = 0; j < columns; j++)
+      {
+         floorMapping[i][j] = floorOriginal[i][j] ;
+         //cout << floorOriginal[i][j] ;
+         //cout << floorMapping[i][j] ;
+      }
+      //cout << endl ;
+   }
+   
+   
+   
+
    //array for floor nodes
    Node ***floorNodes ;
    
@@ -206,12 +119,13 @@ int main(int argc, const char * argv[])
    for (int i = 0; i < rows; i++)
    {
       floorNodes[i] = new Node*[columns] ;
-      for (int j = 0; j < 0; j++)
+      for (int j = 0; j < columns; j++)
       {
          if (floorOriginal[i][j] != 1)
          {
-            Node temp = Node(i, j, floorOriginal[i][j]) ;
-            floorNodes[i][j] = &temp ;
+            //Node *temp = new Node(i, j, floorOriginal[i][j]) ;
+            //floorNodes[i][j] = temp ;
+            floorNodes[i][j] = new Node(i, j, floorOriginal[i][j]) ;
          }
          else
          {
@@ -238,13 +152,25 @@ int main(int argc, const char * argv[])
    
    
    
+   //
+   
+   
+   
+   
+   
+   
+   
    
    
    // root
-   Node *root = floorNodes[chargerRow][chargerColumn] ;
-   root->backSteps = 0 ;
+   Node *root ;
+   root = floorNodes[chargerRow][chargerColumn] ;
+   root->status = 0 ;
+   //cout << root->row << endl ;
    floorMapping[chargerRow][chargerColumn] = 4 ;
 
+   
+   
 
    //map nodes
    queue<Node*> expendQueue ;
@@ -261,20 +187,7 @@ int main(int argc, const char * argv[])
       {
          next = floorNodes[current->row][current->column - 1] ;
 
-         if (floorMapping[current->row][current->column - 1] == 0)
-         {
-            current->downs.push_back(next) ;
-            next->ups.push_back(current) ;
-            next->backs.push_back(current) ;
-            next->backSteps = current->backSteps + 1 ;
-            current->adjacentNodes.push_back(next) ;
-            next->adjacentNodes.push_back(current) ;
-            
-            // flag for done mapping
-            floorMapping[current->row][current->column - 1] = 4 ;
-            //push to queue for leter check for next node
-            expendQueue.push(next) ;
-         }
+         
          
          if (floorMapping[current->row][current->column - 1] == 4)
          {
@@ -302,8 +215,25 @@ int main(int argc, const char * argv[])
             current->adjacentNodes.push_back(next) ;
             next->adjacentNodes.push_back(current) ;
             
+            // flag for done mapping (dont need it ?)
+            //floorMapping[current->row][current->column - 1] = 4 ;
+         }
+         
+         
+         
+         if (floorMapping[current->row][current->column - 1] == 0)
+         {
+            (current->downs).push_back(next) ;
+            (next->ups).push_back(current) ;
+            (next->backs).push_back(current) ;
+            (next->backSteps) = current->backSteps + 1 ;
+            (current->adjacentNodes).push_back(next) ;
+            (next->adjacentNodes).push_back(current) ;
+            
             // flag for done mapping
             floorMapping[current->row][current->column - 1] = 4 ;
+            //push to queue for leter check for next node
+            expendQueue.push(next) ;
          }
          
       }
@@ -328,15 +258,15 @@ int main(int argc, const char * argv[])
 
    for (int i = 0; i < rows; i++)
    {
-      for (int j = 0; j < 0; j++)
+      for (int j = 0; j < columns; j++)
       {
          if(floorNodes[i][j])
          {
-            cout << floorNodes[i][j]->status << " " ;
+            cout << (Node*)floorNodes[i][j]->ups.front() << " " ;
          }
          else
          {
-            cout << " " ;
+            cout << "  " ;
          }
          
       }
@@ -344,7 +274,7 @@ int main(int argc, const char * argv[])
    }
    
    
-   */
+   
    
    return 0;
 }
