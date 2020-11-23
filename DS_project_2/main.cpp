@@ -182,12 +182,11 @@ int main(int argc, const char * argv[])
    {
       current = expendQueue.front() ;
       
-      
+      //check for the left node
       if (current->column - 1 >= 0)
       {
          next = floorNodes[current->row][current->column - 1] ;
 
-         
          
          if (floorMapping[current->row][current->column - 1] == 4)
          {
@@ -220,7 +219,6 @@ int main(int argc, const char * argv[])
          }
          
          
-         
          if (floorMapping[current->row][current->column - 1] == 0)
          {
             (current->downs).push_back(next) ;
@@ -229,20 +227,178 @@ int main(int argc, const char * argv[])
             (next->backSteps) = current->backSteps + 1 ;
             (current->adjacentNodes).push_back(next) ;
             (next->adjacentNodes).push_back(current) ;
-            
+
             // flag for done mapping
             floorMapping[current->row][current->column - 1] = 4 ;
             //push to queue for leter check for next node
             expendQueue.push(next) ;
          }
-         
       }
       
       
       
       
       
+      //check for the up node
+      if (current->row - 1 >= 0)
+      {
+         next = floorNodes[current->row - 1][current->column] ;
+
+         
+         if (floorMapping[current->row - 1][current->column] == 4)
+         {
+            current->downs.push_back(next) ;
+            next->ups.push_back(current) ;
+            
+            // should consider 2 ways
+            if (next->backSteps > current->backSteps + 1)
+            {
+               next->backSteps = current->backSteps + 1 ;
+               next->backs.clear() ;
+               next->backs.push_back(current) ;
+            }
+            
+            if (next->backSteps == current->backSteps + 1)
+            {
+               next->backs.push_back(current) ;
+            }
+            
+            if (next->backSteps < current->backSteps + 1)
+            {
+               //do nothing
+            }
+            
+            current->adjacentNodes.push_back(next) ;
+            next->adjacentNodes.push_back(current) ;
+            
+            // flag for done mapping (dont need it ?)
+            //floorMapping[current->row][current->column - 1] = 4 ;
+         }
+         
+         
+         if (floorMapping[current->row - 1][current->column] == 0)
+         {
+            (current->downs).push_back(next) ;
+            (next->ups).push_back(current) ;
+            (next->backs).push_back(current) ;
+            (next->backSteps) = current->backSteps + 1 ;
+            (current->adjacentNodes).push_back(next) ;
+            (next->adjacentNodes).push_back(current) ;
+
+            // flag for done mapping
+            floorMapping[current->row - 1][current->column] = 4 ;
+            //push to queue for leter check for next node
+            expendQueue.push(next) ;
+         }
+      }
       
+      
+      //check for the right node
+      if (current->column + 1 >= 0)
+      {
+         next = floorNodes[current->row][current->column + 1] ;
+
+         
+         if (floorMapping[current->row][current->column + 1] == 4)
+         {
+            current->downs.push_back(next) ;
+            next->ups.push_back(current) ;
+            
+            // should consider 2 ways
+            if (next->backSteps > current->backSteps + 1)
+            {
+               next->backSteps = current->backSteps + 1 ;
+               next->backs.clear() ;
+               next->backs.push_back(current) ;
+            }
+            
+            if (next->backSteps == current->backSteps + 1)
+            {
+               next->backs.push_back(current) ;
+            }
+            
+            if (next->backSteps < current->backSteps + 1)
+            {
+               //do nothing
+            }
+            
+            current->adjacentNodes.push_back(next) ;
+            next->adjacentNodes.push_back(current) ;
+            
+            // flag for done mapping (dont need it ?)
+            //floorMapping[current->row][current->column - 1] = 4 ;
+         }
+         
+         
+         if (floorMapping[current->row][current->column + 1] == 0)
+         {
+            (current->downs).push_back(next) ;
+            (next->ups).push_back(current) ;
+            (next->backs).push_back(current) ;
+            (next->backSteps) = current->backSteps + 1 ;
+            (current->adjacentNodes).push_back(next) ;
+            (next->adjacentNodes).push_back(current) ;
+
+            // flag for done mapping
+            floorMapping[current->row][current->column + 1] = 4 ;
+            //push to queue for leter check for next node
+            expendQueue.push(next) ;
+         }
+      }
+      
+      
+      //check for the down node
+      if (current->row + 1 >= 0)
+      {
+         next = floorNodes[current->row + 1][current->column] ;
+
+         
+         if (floorMapping[current->row + 1][current->column] == 4)
+         {
+            current->downs.push_back(next) ;
+            next->ups.push_back(current) ;
+            
+            // should consider 2 ways
+            if (next->backSteps > current->backSteps + 1)
+            {
+               next->backSteps = current->backSteps + 1 ;
+               next->backs.clear() ;
+               next->backs.push_back(current) ;
+            }
+            
+            if (next->backSteps == current->backSteps + 1)
+            {
+               next->backs.push_back(current) ;
+            }
+            
+            if (next->backSteps < current->backSteps + 1)
+            {
+               //do nothing
+            }
+            
+            current->adjacentNodes.push_back(next) ;
+            next->adjacentNodes.push_back(current) ;
+            
+            // flag for done mapping (dont need it ?)
+            //floorMapping[current->row][current->column - 1] = 4 ;
+         }
+         
+         
+         if (floorMapping[current->row + 1][current->column] == 0)
+         {
+            (current->downs).push_back(next) ;
+            (next->ups).push_back(current) ;
+            (next->backs).push_back(current) ;
+            (next->backSteps) = current->backSteps + 1 ;
+            (current->adjacentNodes).push_back(next) ;
+            (next->adjacentNodes).push_back(current) ;
+
+            // flag for done mapping
+            floorMapping[current->row + 1][current->column] = 4 ;
+            //push to queue for leter check for next node
+            expendQueue.push(next) ;
+         }
+      }
       
       
       
@@ -255,18 +411,59 @@ int main(int argc, const char * argv[])
    
    
    
+   
+   
+   
+   
+   for (int i = 0; i < rows; i++)
+   {
+      for (int j = 0; j < columns; j++)
+      {
+         current = floorNodes[i][j] ;
+         
+         if (current)
+         {
+            cout << current << " " ;
+         }
+         else
+         {
+            cout << "               " ;
+         }
+         
+      }
+      cout << '\n' ;
+   }
+   
+   
+   
+   
+   
+   
+   
+   
+   
 
    for (int i = 0; i < rows; i++)
    {
       for (int j = 0; j < columns; j++)
       {
-         if(floorNodes[i][j])
+         current = floorNodes[i][j] ;
+         
+         if (current)
          {
-            cout << (Node*)floorNodes[i][j]->ups.front() << " " ;
+            if(current->backs.size() > 0)
+            {
+               cout << current->backs.front() << " "  ;
+               //cout << current->backSteps << "  "  ;
+            }
+            else
+            {
+               cout << "               " ;
+            }
          }
          else
          {
-            cout << "  " ;
+            cout << "               " ;
          }
          
       }
