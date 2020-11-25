@@ -446,7 +446,9 @@ int main(int argc, const char * argv[])
       //test
       //cout << totalZeros << endl ;
       cout << totalZeros << "  " << totalSteps << endl ;
-      if (totalSteps > 2000) {
+      //test
+      
+      if (totalSteps > 100000) {
          break ;
       }
       
@@ -498,7 +500,6 @@ int main(int argc, const char * argv[])
                if (currentStep->backs[i]->visitedTimes < nextStepVisitedTimes)
                {
                   nextStep = currentStep->backs[i] ;
-                  break ;
                }
             }
             
@@ -533,6 +534,110 @@ int main(int argc, const char * argv[])
       
       
       
+      
+      
+      
+      
+      
+      for (int i = 0; i < currentStep->downs.size(); i++)
+      {
+         if (currentStep->downs[i]->status == 0)
+         {
+            nextStep = currentStep->downs[i] ;
+            break ;
+         }
+      }
+
+      if (nextStep)
+      {
+         currentStep = nextStep ;
+         nextStep = NULL ;
+         totalSteps ++ ;
+         currentBattery -- ;
+         //currentStep->visitedTimes ++ ;
+         //currentStep->status = 2 ;
+         continue ;
+      }
+      
+      
+      
+      for (int i = 0; i < currentStep->ups.size(); i++)
+      {
+         if (currentStep->ups[i]->status == 0)
+         {
+            nextStep = currentStep->ups[i] ;
+            break ;
+         }
+      }
+
+      if (nextStep)
+      {
+         currentStep = nextStep ;
+         nextStep = NULL ;
+         totalSteps ++ ;
+         currentBattery -- ;
+         //currentStep->visitedTimes ++ ;
+         //currentStep->status = 2 ;
+         continue ;
+      }
+      
+      
+      nextStepVisitedTimes = 1000000 ;
+      for (int i = 0; i < currentStep->adjacentNodes.size(); i++)
+      {
+         
+         if (currentStep->adjacentNodes[i]->visitedTimes < nextStepVisitedTimes)
+         {
+            nextStepVisitedTimes = currentStep->adjacentNodes[i]->visitedTimes ;
+            nextStep = currentStep->adjacentNodes[i] ;
+         }
+      }
+      
+      
+      
+      /*
+      for (int i = 0; i < currentStep->downs.size(); i++)
+      {
+         
+         if (currentStep->downs[i]->visitedTimes < nextStepVisitedTimes)
+         {
+            nextStepVisitedTimes = currentStep->downs[i]->visitedTimes ;
+            nextStep = currentStep->downs[i] ;
+         }
+      }
+      
+      
+      
+      
+      //to check
+      for (int i = 0; i < currentStep->ups.size(); i++)
+      {
+         
+         if (currentStep->ups[i]->visitedTimes < nextStepVisitedTimes)
+         {
+            nextStepVisitedTimes = currentStep->ups[i]->visitedTimes ;
+            nextStep = currentStep->ups[i] ;
+         }
+      }
+      */
+      
+      if (nextStep)
+      {
+         currentStep = nextStep ;
+         nextStep = NULL ;
+         totalSteps ++ ;
+         currentBattery -- ;
+         //currentStep->visitedTimes ++ ;
+         //currentStep->status = 2 ;
+         continue ;
+      }
+      
+      
+      
+      
+      
+      /*
+      
       for (int i = 0; i < currentStep->adjacentNodes.size(); i++)
       {
          if (currentStep->adjacentNodes[i]->status == 0)
@@ -553,37 +658,8 @@ int main(int argc, const char * argv[])
       }
       
       
-      for (int i = 0; i < currentStep->downs.size(); i++)
-      {
-         if (currentStep->downs[i]->visitedTimes < nextStepVisitedTimes)
-         {
-            nextStepVisitedTimes = currentStep->downs[i]->visitedTimes ;
-            nextStep = currentStep->downs[i] ;
-         }
-      }
       
-      
-      //to check
-      for (int i = 0; i < currentStep->ups.size(); i++)
-      {
-         if (currentStep->ups[i]->visitedTimes < nextStepVisitedTimes)
-         {
-            nextStepVisitedTimes = currentStep->ups[i]->visitedTimes ;
-            nextStep = currentStep->ups[i] ;
-         }
-      }
-      
-      
-      if (nextStep)
-      {
-         currentStep = nextStep ;
-         nextStep = NULL ;
-         totalSteps ++ ;
-         currentBattery -- ;
-         //currentStep->visitedTimes ++ ;
-         //currentStep->status = 2 ;
-         continue ;
-      }
+      */
       
       
       
@@ -591,12 +667,7 @@ int main(int argc, const char * argv[])
       
       
       
-      
-      
-      
-      
-      
-      
+      cout << "no found" << endl ;
       
       
       
@@ -699,7 +770,7 @@ int main(int argc, const char * argv[])
    
    
    
-   
+   /*
    
    
    //testing output
@@ -751,7 +822,7 @@ int main(int argc, const char * argv[])
       }
       cout << '\n' ;
    }
-   
+   */
    
    
    for (int i = 0; i < rows; i++)
@@ -762,7 +833,7 @@ int main(int argc, const char * argv[])
          
          if (current)
          {
-            cout << current->visitedTimes << " " ;
+            cout << current->downs.size() << " " ;
          }
          else
          {
@@ -774,14 +845,15 @@ int main(int argc, const char * argv[])
    }
    
    
+    
    
    /*
-   for (int i = 0 ; i < floorNodes[10][7]->ups.size() ; i++)
+   for (int i = 0 ; i < floorNodes[1][1]->downs.size() ; i++)
    {
-      cout << floorNodes[10][7]->ups[i] << endl ;
+      cout << floorNodes[1][1]->downs[i] << endl ;
    }
-   */
    
+   */
    
    cout << totalZeros << endl << totalSteps << endl ;
    
