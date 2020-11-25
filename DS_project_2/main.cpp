@@ -367,25 +367,64 @@ int main(int argc, const char * argv[])
    
    
    
-   Node *currentStep, *nextStep = NULL ;
+   Node *currentStep, *nextStep = NULL, *lastEndStep = NULL ;
    int nextStepVisitedTimes, currentBattery = battery ;
-   
+   bool backToLastEndPoint = 0 ;
+   stack<Node*> backToLastEndPointPath ;
+   vector<Node*> path ;
    
    
    currentStep = root ;
    
    while (totalZeros > 0)
    {
+      
+      
       //test
       //cout << totalZeros << endl ;
+      cout << totalSteps << endl ;
       //cout << totalZeros << "  " << totalSteps << endl ;
-      if (totalSteps > 50000) {
+      
+      /*
+      if (totalSteps > 10000000) {
          break ;
       }
+      */
       
+      
+      
+      if (backToLastEndPoint)
+      {
+         while (!backToLastEndPointPath.empty())
+         {
+            currentStep = backToLastEndPointPath.top() ;
+            
+            path.push_back(currentStep) ;
+            currentStep->visitedTimes ++ ;
+            totalSteps ++ ;
+            currentBattery -- ;
+            
+            backToLastEndPointPath.pop() ;
+         }
+         currentStep->visitedTimes -- ;
+         path.pop_back() ;
 
-      nextStepVisitedTimes = 1000000 ;
-
+         
+         
+         
+         
+         
+         backToLastEndPoint = 0 ;
+         continue ;
+      }
+      
+      ///
+      
+      
+      
+      
+      path.push_back(currentStep) ;
+      
       if (currentStep->status == 0)
          totalZeros-- ;
       
@@ -393,10 +432,26 @@ int main(int argc, const char * argv[])
       currentStep->status = 2 ;
       
       
+      
+      
       if (currentBattery == currentStep->backSteps)
       {
+         
+         
+         for (int i = 0; i < currentStep->adjacentNodes.size(); i++)
+         {
+            if (currentStep->adjacentNodes[i]->backs.size() == 1 && currentStep->adjacentNodes[i]->status ==0)
+               backToLastEndPoint = 1 ;
+         }
+         
+
+         
          while (currentStep != root)
          {
+            if (backToLastEndPoint)
+               backToLastEndPointPath.push(currentStep) ;
+            
+            
             if (currentStep->status == 0)
                totalZeros-- ;
             
@@ -436,8 +491,10 @@ int main(int argc, const char * argv[])
          
          
          if (currentStep == root)
+         {
+            path.push_back(currentStep) ;
             continue ;
-         
+         }
          
          
       }
@@ -471,7 +528,7 @@ int main(int argc, const char * argv[])
       
       
       
-      
+      nextStepVisitedTimes = 1000000 ;
       
       //check here
       
@@ -658,7 +715,7 @@ int main(int argc, const char * argv[])
       cout << '\n' ;
    }
    
-   
+   */
    
    for (int i = 0; i < rows; i++)
    {
@@ -690,7 +747,6 @@ int main(int argc, const char * argv[])
    
    
    cout << totalZeros << endl << totalSteps << endl ;
-   
    return 0;
 }
 
