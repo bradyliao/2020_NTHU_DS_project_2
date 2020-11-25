@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -446,9 +447,7 @@ int main(int argc, const char * argv[])
       //test
       //cout << totalZeros << endl ;
       cout << totalZeros << "  " << totalSteps << endl ;
-      //test
-      
-      if (totalSteps > 100000) {
+      if (totalSteps > 25000) {
          break ;
       }
       
@@ -492,14 +491,26 @@ int main(int argc, const char * argv[])
                //currentStep->status = 2 ;
                continue ;
             }
+            else
+            {
+               currentStep = currentStep->backs[0];
+               nextStep = NULL ;
+               totalSteps ++ ;
+               currentBattery -- ;
+               //currentStep->visitedTimes ++ ;
+               //currentStep->status = 2 ;
+               continue ;
+            }
             
-            
+            /*
             
             for (int i = 0; i < currentStep->backs.size() ; i++)
             {
                if (currentStep->backs[i]->visitedTimes < nextStepVisitedTimes)
                {
+                  nextStepVisitedTimes = currentStep->backs[i]->visitedTimes ;
                   nextStep = currentStep->backs[i] ;
+                  cout << currentStep->row << "   " << current->column << endl ;
                }
             }
             
@@ -514,7 +525,7 @@ int main(int argc, const char * argv[])
                //currentStep->status = 2 ;
                continue ;
             }
-            
+            */
             
          }
          
@@ -534,71 +545,37 @@ int main(int argc, const char * argv[])
       
       
       
-      
-      
-      
-      
-      
-      for (int i = 0; i < currentStep->downs.size(); i++)
-      {
-         if (currentStep->downs[i]->status == 0)
-         {
-            nextStep = currentStep->downs[i] ;
-            break ;
-         }
-      }
-
-      if (nextStep)
-      {
-         currentStep = nextStep ;
-         nextStep = NULL ;
-         totalSteps ++ ;
-         currentBattery -- ;
-         //currentStep->visitedTimes ++ ;
-         //currentStep->status = 2 ;
-         continue ;
-      }
-      
-      
-      
-      for (int i = 0; i < currentStep->ups.size(); i++)
-      {
-         if (currentStep->ups[i]->status == 0)
-         {
-            nextStep = currentStep->ups[i] ;
-            break ;
-         }
-      }
-
-      if (nextStep)
-      {
-         currentStep = nextStep ;
-         nextStep = NULL ;
-         totalSteps ++ ;
-         currentBattery -- ;
-         //currentStep->visitedTimes ++ ;
-         //currentStep->status = 2 ;
-         continue ;
-      }
-      
-      
-      nextStepVisitedTimes = 1000000 ;
       for (int i = 0; i < currentStep->adjacentNodes.size(); i++)
       {
-         
-         if (currentStep->adjacentNodes[i]->visitedTimes < nextStepVisitedTimes)
+         if (currentStep->adjacentNodes[i]->status == 0)
          {
-            nextStepVisitedTimes = currentStep->adjacentNodes[i]->visitedTimes ;
             nextStep = currentStep->adjacentNodes[i] ;
+            break ;
          }
+      }
+
+      if (nextStep)
+      {
+         currentStep = nextStep ;
+         nextStep = NULL ;
+         totalSteps ++ ;
+         currentBattery -- ;
+         //currentStep->visitedTimes ++ ;
+         //currentStep->status = 2 ;
+         continue ;
       }
       
       
       
-      /*
+      
+      
+      
+      
+      
+      //check here
+      
       for (int i = 0; i < currentStep->downs.size(); i++)
       {
-         
          if (currentStep->downs[i]->visitedTimes < nextStepVisitedTimes)
          {
             nextStepVisitedTimes = currentStep->downs[i]->visitedTimes ;
@@ -607,19 +584,16 @@ int main(int argc, const char * argv[])
       }
       
       
-      
-      
       //to check
       for (int i = 0; i < currentStep->ups.size(); i++)
       {
-         
          if (currentStep->ups[i]->visitedTimes < nextStepVisitedTimes)
          {
             nextStepVisitedTimes = currentStep->ups[i]->visitedTimes ;
             nextStep = currentStep->ups[i] ;
          }
       }
-      */
+      
       
       if (nextStep)
       {
@@ -636,30 +610,6 @@ int main(int argc, const char * argv[])
       
       
       
-      /*
-      
-      for (int i = 0; i < currentStep->adjacentNodes.size(); i++)
-      {
-         if (currentStep->adjacentNodes[i]->status == 0)
-         {
-            nextStep = currentStep->adjacentNodes[i] ;
-         }
-      }
-
-      if (nextStep)
-      {
-         currentStep = nextStep ;
-         nextStep = NULL ;
-         totalSteps ++ ;
-         currentBattery -- ;
-         //currentStep->visitedTimes ++ ;
-         //currentStep->status = 2 ;
-         continue ;
-      }
-      
-      
-      
-      */
       
       
       
@@ -667,7 +617,7 @@ int main(int argc, const char * argv[])
       
       
       
-      cout << "no found" << endl ;
+      
       
       
       
@@ -770,7 +720,7 @@ int main(int argc, const char * argv[])
    
    
    
-   /*
+   
    
    
    //testing output
@@ -822,7 +772,7 @@ int main(int argc, const char * argv[])
       }
       cout << '\n' ;
    }
-   */
+   
    
    
    for (int i = 0; i < rows; i++)
@@ -833,7 +783,7 @@ int main(int argc, const char * argv[])
          
          if (current)
          {
-            cout << current->downs.size() << " " ;
+            cout << current->visitedTimes << " " ;
          }
          else
          {
@@ -845,15 +795,14 @@ int main(int argc, const char * argv[])
    }
    
    
-    
    
    /*
-   for (int i = 0 ; i < floorNodes[1][1]->downs.size() ; i++)
+   for (int i = 0 ; i < floorNodes[10][7]->ups.size() ; i++)
    {
-      cout << floorNodes[1][1]->downs[i] << endl ;
+      cout << floorNodes[10][7]->ups[i] << endl ;
    }
-   
    */
+   
    
    cout << totalZeros << endl << totalSteps << endl ;
    
@@ -861,20 +810,6 @@ int main(int argc, const char * argv[])
 }
 
 
-
-
-
-
-
-
-
-
- 
-
- 
- 
- 
- 
 
 
 
