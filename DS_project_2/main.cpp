@@ -385,11 +385,11 @@ int main(int argc, const char * argv[])
       cout << totalSteps << endl ;
       //cout << totalZeros << "  " << totalSteps << endl ;
       
-      /*
-      if (totalSteps > 10000000) {
+      
+      if (totalSteps > 100000000) {
          break ;
       }
-      */
+      
       
       
       
@@ -418,7 +418,6 @@ int main(int argc, const char * argv[])
          continue ;
       }
       
-      ///
       
       
       
