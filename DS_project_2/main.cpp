@@ -68,13 +68,11 @@ int main(int argc, const char * argv[])
          {
             infile >> temp ;
             if (temp == '0')
-            {
                floorOriginal[i][j] = 0 ;
-            }
+
             if (temp == '1')
-            {
                floorOriginal[i][j] = 1 ;
-            }
+            
             if (temp == 'R')
             {
                floorOriginal[i][j] = 3 ;
@@ -84,16 +82,10 @@ int main(int argc, const char * argv[])
          }
          infile.get() ;
       }
-      
-       
-
    }
    else
       return 1 ;
    
-   
-   //test
-   //cout << chargerRow << " " << chargerColumn << endl  ;
    
    //array for mapping floor
    floorMapping = new int *[rows] ;
@@ -103,12 +95,7 @@ int main(int argc, const char * argv[])
       floorMapping[i] = new int[columns] ;
       
       for (int j = 0; j < columns; j++)
-      {
          floorMapping[i][j] = floorOriginal[i][j] ;
-         //cout << floorOriginal[i][j] ;
-         //cout << floorMapping[i][j] ;
-      }
-      //cout << endl ;
    }
    
    
@@ -124,15 +111,9 @@ int main(int argc, const char * argv[])
       for (int j = 0; j < columns; j++)
       {
          if (floorOriginal[i][j] != 1)
-         {
-            //Node *temp = new Node(i, j, floorOriginal[i][j]) ;
-            //floorNodes[i][j] = temp ;
             floorNodes[i][j] = new Node(i, j, floorOriginal[i][j]) ;
-         }
          else
-         {
             floorNodes[i][j] = NULL ;
-         }
       }
    }
    
@@ -143,11 +124,9 @@ int main(int argc, const char * argv[])
    Node *root ;
    root = floorNodes[chargerRow][chargerColumn] ;
    root->status = 0 ;
-   //cout << root->row << endl ;
    floorMapping[chargerRow][chargerColumn] = 4 ;
 
    
-   cout << "before map nodes" << endl ;
 
    //map nodes
    queue<Node*> expendQueue ;
@@ -166,7 +145,6 @@ int main(int argc, const char * argv[])
       {
          next = floorNodes[current->row][current->column - 1] ;
 
-         
          if (floorMapping[current->row][current->column - 1] == 4)
          {
             if(find(current->ups.begin(), current->ups.end(), next) == current->ups.end())
@@ -183,14 +161,7 @@ int main(int argc, const char * argv[])
             }
             
             if (next->backSteps == current->backSteps + 1)
-            {
                next->backs.push_back(current) ;
-            }
-            
-            if (next->backSteps < current->backSteps + 1)
-            {
-               //do nothing
-            }
             
             
             if(find(current->adjacentNodes.begin(), current->adjacentNodes.end(), next) == current->adjacentNodes.end())
@@ -198,10 +169,6 @@ int main(int argc, const char * argv[])
             
             if(find(next->adjacentNodes.begin(), next->adjacentNodes.end(), current) == next->adjacentNodes.end())
                next->adjacentNodes.push_back(current) ;
-            //
-            
-            // flag for done mapping (dont need it ?)
-            //floorMapping[current->row][current->column - 1] = 4 ;
          }
          
          
@@ -226,7 +193,6 @@ int main(int argc, const char * argv[])
       if (current->row - 1 >= 0)
       {
          next = floorNodes[current->row - 1][current->column] ;
-
          
          if (floorMapping[current->row - 1][current->column] == 4)
          {
@@ -244,25 +210,13 @@ int main(int argc, const char * argv[])
             }
             
             if (next->backSteps == current->backSteps + 1)
-            {
                next->backs.push_back(current) ;
-            }
-            
-            if (next->backSteps < current->backSteps + 1)
-            {
-               //do nothing
-            }
             
             if(find(current->adjacentNodes.begin(), current->adjacentNodes.end(), next) == current->adjacentNodes.end())
                current->adjacentNodes.push_back(next) ;
             
             if(find(next->adjacentNodes.begin(), next->adjacentNodes.end(), current) == next->adjacentNodes.end())
                next->adjacentNodes.push_back(current) ;
-            //current->adjacentNodes.push_back(next) ;
-            //next->adjacentNodes.push_back(current) ;
-            
-            // flag for done mapping (dont need it ?)
-            //floorMapping[current->row][current->column - 1] = 4 ;
          }
          
          
@@ -281,6 +235,7 @@ int main(int argc, const char * argv[])
             expendQueue.push(next) ;
          }
       }
+      
       
       
       //check for the right node
@@ -305,25 +260,14 @@ int main(int argc, const char * argv[])
             }
             
             if (next->backSteps == current->backSteps + 1)
-            {
                next->backs.push_back(current) ;
-            }
             
-            if (next->backSteps < current->backSteps + 1)
-            {
-               //do nothing
-            }
             
             if(find(current->adjacentNodes.begin(), current->adjacentNodes.end(), next) == current->adjacentNodes.end())
                current->adjacentNodes.push_back(next) ;
             
             if(find(next->adjacentNodes.begin(), next->adjacentNodes.end(), current) == next->adjacentNodes.end())
                next->adjacentNodes.push_back(current) ;
-            //current->adjacentNodes.push_back(next) ;
-            //next->adjacentNodes.push_back(current) ;
-            
-            // flag for done mapping (dont need it ?)
-            //floorMapping[current->row][current->column - 1] = 4 ;
          }
          
          
@@ -366,25 +310,13 @@ int main(int argc, const char * argv[])
             }
             
             if (next->backSteps == current->backSteps + 1)
-            {
                next->backs.push_back(current) ;
-            }
-            
-            if (next->backSteps < current->backSteps + 1)
-            {
-               //do nothing
-            }
             
             if(find(current->adjacentNodes.begin(), current->adjacentNodes.end(), next) == current->adjacentNodes.end())
                current->adjacentNodes.push_back(next) ;
             
             if(find(next->adjacentNodes.begin(), next->adjacentNodes.end(), current) == next->adjacentNodes.end())
                next->adjacentNodes.push_back(current) ;
-            //current->adjacentNodes.push_back(next) ;
-            //next->adjacentNodes.push_back(current) ;
-            
-            // flag for done mapping (dont need it ?)
-            //floorMapping[current->row][current->column - 1] = 4 ;
          }
          
          
@@ -435,19 +367,19 @@ int main(int argc, const char * argv[])
    
    
    
-   cout << "node" ;
    Node *currentStep, *nextStep = NULL ;
-   cout << "root" ;
-   currentStep = root ;
-   
    int nextStepVisitedTimes, currentBattery = battery ;
+   
+   
+   
+   currentStep = root ;
    
    while (totalZeros > 0)
    {
       //test
       //cout << totalZeros << endl ;
-      cout << totalZeros << "  " << totalSteps << endl ;
-      if (totalSteps > 25000) {
+      //cout << totalZeros << "  " << totalSteps << endl ;
+      if (totalSteps > 50000) {
          break ;
       }
       
@@ -487,8 +419,6 @@ int main(int argc, const char * argv[])
                nextStep = NULL ;
                totalSteps ++ ;
                currentBattery -- ;
-               //currentStep->visitedTimes ++ ;
-               //currentStep->status = 2 ;
                continue ;
             }
             else
@@ -497,43 +427,16 @@ int main(int argc, const char * argv[])
                nextStep = NULL ;
                totalSteps ++ ;
                currentBattery -- ;
-               //currentStep->visitedTimes ++ ;
-               //currentStep->status = 2 ;
                continue ;
             }
-            
-            /*
-            
-            for (int i = 0; i < currentStep->backs.size() ; i++)
-            {
-               if (currentStep->backs[i]->visitedTimes < nextStepVisitedTimes)
-               {
-                  nextStepVisitedTimes = currentStep->backs[i]->visitedTimes ;
-                  nextStep = currentStep->backs[i] ;
-                  cout << currentStep->row << "   " << current->column << endl ;
-               }
-            }
-            
-            
-            if (nextStep)
-            {
-               currentStep = nextStep ;
-               nextStep = NULL ;
-               totalSteps ++ ;
-               currentBattery -- ;
-               //currentStep->visitedTimes ++ ;
-               //currentStep->status = 2 ;
-               continue ;
-            }
-            */
-            
          }
          
          currentBattery = battery ;
          
-         if (currentStep == root) {
+         
+         
+         if (currentStep == root)
             continue ;
-         }
          
          
          
@@ -560,8 +463,6 @@ int main(int argc, const char * argv[])
          nextStep = NULL ;
          totalSteps ++ ;
          currentBattery -- ;
-         //currentStep->visitedTimes ++ ;
-         //currentStep->status = 2 ;
          continue ;
       }
       
@@ -601,28 +502,12 @@ int main(int argc, const char * argv[])
          nextStep = NULL ;
          totalSteps ++ ;
          currentBattery -- ;
-         //currentStep->visitedTimes ++ ;
-         //currentStep->status = 2 ;
          continue ;
       }
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
-      
 
+      
+      
+      
    }
    
    
@@ -721,7 +606,7 @@ int main(int argc, const char * argv[])
    
    
    
-   
+   /*
    
    //testing output
    
