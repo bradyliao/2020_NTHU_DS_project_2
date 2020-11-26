@@ -56,7 +56,7 @@ int main(int argc, const char * argv[])
       
       infile >> rows >> columns >> battery ;
       infile.get() ;
-      cout << rows << " " << columns << " " << battery << endl ;
+      
       
       floorOriginal = new int*[rows] ;
 
@@ -341,7 +341,13 @@ int main(int argc, const char * argv[])
    }
    
    
-   cout << "done building map\n" ;
+   cout << endl ;
+   cout << "Floor information:" << endl
+        << "rows:     " << rows << endl
+        << "columns:  " << columns << endl
+        << "battery:  " << battery << endl << endl ;
+   
+   cout << "Running..." << endl << endl ;
    
    
    
@@ -349,25 +355,10 @@ int main(int argc, const char * argv[])
    
    
    
+   //find path
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   Node *currentStep, *nextStep = NULL, *lastEndStep = NULL ;
-   int nextStepVisitedTimes, currentBattery = battery ;
+   Node *currentStep, *nextStep = NULL ;
+   int currentBattery = battery ;
    bool backToLastEndPoint = 0 ;
    stack<Node*> backToLastEndPointPath ;
    vector<Node*> path ;
@@ -377,301 +368,176 @@ int main(int argc, const char * argv[])
    
    while (totalZeros > 0)
    {
-      
-      cout << currentStep->row << "  "<< currentStep->column<< "  " << currentBattery << "  " << currentStep->backSteps << endl ;
-      //test
-      //cout << totalZeros << endl ;
-      //cout << totalSteps << endl ;
-      //cout << totalZeros << "  " << totalSteps << endl ;
-      
-      
-      if (totalSteps > 100000000) {
+      if (totalSteps > 60000000)
          break ;
-      }
+      
+      //testing
+      //cout << totalSteps << endl ;
       
       
-      
-      
-      if (backToLastEndPoint)
+      //explore map
+      while (currentBattery > currentStep->backSteps)
       {
-         
-         backToLastEndPointPath.pop() ;
-         while (!backToLastEndPointPath.empty())
+         //indicate came here
+         currentStep->visitedTimes++ ;
+         if (currentStep->status == 0)
          {
-            currentStep = backToLastEndPointPath.top() ;
-            cout << currentStep->row << "  "<< currentStep->column<< "  " << currentBattery << "  " << currentStep->backSteps << endl ;
-
-            path.push_back(currentStep) ;
-            currentStep->visitedTimes ++ ;
-            totalSteps ++ ;
-            currentBattery -- ;
-            
-            backToLastEndPointPath.pop() ;
-         }
-         
-
-         
-         
-         
-         
-         
-         backToLastEndPoint = 0 ;
-         continue ;
-      }
-      
-      
-      
-      
-      
-      path.push_back(currentStep) ;
-      
-      if (currentStep->status == 0)
-         totalZeros-- ;
-      
-      currentStep->visitedTimes ++ ;
-      currentStep->status = 2 ;
-      
-      
-      
-      
-      if (currentBattery - 1 == currentStep->backSteps)
-      {
-         
-         
-         for (int i = 0; i < currentStep->adjacentNodes.size(); i++)
-         {
-            if (currentStep->adjacentNodes[i]->backs.size() == 1 && currentStep->adjacentNodes[i]->status ==0)
-               backToLastEndPoint = 1 ;
-         }
-         
-
-         
-         while (currentStep != root)
-         {
-            if (backToLastEndPoint)
-               backToLastEndPointPath.push(currentStep) ;
-            
-            cout << currentStep->row << "  "<< currentStep->column<< "  " << currentBattery << "  " << currentStep->backSteps << endl ;
-
-            if (currentStep->status == 0)
-               totalZeros-- ;
-            
-            currentStep->visitedTimes ++ ;
             currentStep->status = 2 ;
-            
-
-            nextStep = currentStep->backs[0] ;
-            
-            for (int i = 0; i < currentStep->backs.size() ; i++)
+            totalZeros -- ;
+         }
+         path.push_back(currentStep) ;
+         
+         
+         //find next
+         nextStep = currentStep->adjacentNodes[0] ;
+         
+         for (int i = 0; i < currentStep->downs.size() ; i++)
+         {
+            if (currentStep->downs[i]->visitedTimes < nextStep->visitedTimes)
             {
-               if (currentStep->backs[i]->backSteps < currentStep->backs[0]->backSteps)
-               {
-                  nextStep = currentStep->backs[i] ;
-                  break ;
-               }
-            }
-            
-            
-            if (nextStep)
-            {
-               currentStep = nextStep ;
-               nextStep = NULL ;
-               totalSteps ++ ;
-               currentBattery -- ;
-               path.push_back(currentStep) ;
-               continue ;
-            }
-            else
-            {
-               currentStep = currentStep->backs[0];
-               nextStep = NULL ;
-               totalSteps ++ ;
-               currentBattery -- ;
-               path.push_back(currentStep) ;
-
-               continue ;
+               nextStep = currentStep->downs[i] ;
             }
          }
          
-         currentBattery = battery ;
-         
-         
-         
-         if (currentStep == root)
+         for (int i = 0; i < currentStep->ups.size() ; i++)
          {
-            path.pop_back() ;
-            //path.push_back(currentStep) ;
-            continue ;
+            if (currentStep->ups[i]->visitedTimes < nextStep->visitedTimes)
+            {
+               nextStep = currentStep->ups[i] ;
+            }
          }
          
-         
-      }
-      
-      
-      
-      
-      
-      
-      
-      for (int i = 0; i < currentStep->adjacentNodes.size(); i++)
-      {
-         if (currentStep->adjacentNodes[i]->status == 0)
+         for (int i = 0; i < currentStep->adjacentNodes.size() ; i++)
          {
-            nextStep = currentStep->adjacentNodes[i] ;
+            if (currentStep->adjacentNodes[i]->status == 0)
+            {
+               nextStep = currentStep->adjacentNodes[i] ;
+               break ;
+            }
+         }
+         
+         //goto next
+         currentStep = nextStep ;
+         totalSteps ++ ;
+         currentBattery -- ;
+         
+         if (totalZeros == 0) {
             break ;
          }
       }
-
-      if (nextStep)
+      
+      
+      //backToLastEndPoint?
+      for (int i = 0 ; i < currentStep->adjacentNodes.size() ; i++)
       {
-         currentStep = nextStep ;
-         nextStep = NULL ;
-         totalSteps ++ ;
-         currentBattery -- ;
-         continue ;
-      }
-      
-      
-      
-      
-      
-      
-      nextStepVisitedTimes = 1000000 ;
-      
-      //check here
-      
-      for (int i = 0; i < currentStep->downs.size(); i++)
-      {
-         if (currentStep->downs[i]->visitedTimes < nextStepVisitedTimes)
-         {
-            nextStepVisitedTimes = currentStep->downs[i]->visitedTimes ;
-            nextStep = currentStep->downs[i] ;
+         if (currentStep->adjacentNodes[i]->status == 0) {
+            backToLastEndPoint = 1 ;
          }
       }
       
       
-      //to check
-      for (int i = 0; i < currentStep->ups.size(); i++)
+      
+      
+      
+      
+      //return to root
+      while (currentStep != root)
       {
-         if (currentStep->ups[i]->visitedTimes < nextStepVisitedTimes)
+         //indicate came here
+         currentStep->visitedTimes++ ;
+         if (currentStep->status == 0)
          {
-            nextStepVisitedTimes = currentStep->ups[i]->visitedTimes ;
-            nextStep = currentStep->ups[i] ;
+            currentStep->status = 2 ;
+            totalZeros -- ;
          }
-      }
-      
-      
-      if (nextStep)
-      {
+         path.push_back(currentStep) ;
+         
+         if (backToLastEndPoint) {
+            backToLastEndPointPath.push(currentStep) ;
+         }
+         
+         //find next
+         nextStep = currentStep->backs[0] ;
+         
+         
+         //goto next
          currentStep = nextStep ;
-         nextStep = NULL ;
          totalSteps ++ ;
          currentBattery -- ;
-         continue ;
-      }
 
+      }
+      
+      
+      // when back to root
+      currentBattery = battery ;
       
       
       
+      //back to last end point (if needed)
+      if (backToLastEndPoint == 1)
+      {
+         backToLastEndPointPath.push(currentStep) ;
+         
+         while (backToLastEndPointPath.size() > 1 )
+         {
+            
+            currentStep = backToLastEndPointPath.top() ;
+            currentStep->visitedTimes++ ;
+            if (currentStep->status == 0)
+            {
+               currentStep->status = 2 ;
+               totalZeros -- ;
+            }
+            path.push_back(currentStep) ;
+
+            //
+            backToLastEndPointPath.pop() ;
+            
+
+            totalSteps ++ ;
+            currentBattery -- ;
+         
+            
+         }
+         currentStep = backToLastEndPointPath.top() ;
+         backToLastEndPointPath.pop() ;
+         
+         
+         backToLastEndPoint = 0 ;
+      }
    }
    
    
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
+   if (path.back() != root)
+   {
+      //indicate came here
+      currentStep->visitedTimes++ ;
+      if (currentStep->status == 0)
+      {
+         currentStep->status = 2 ;
+         totalZeros -- ;
+      }
+      path.push_back(currentStep) ;
+      
+
+      
+      //find next
+      nextStep = NULL ;
+      
+      
+      //goto next
+      currentStep = nextStep ;
+      totalSteps ++ ;
+
+
+   }
+   
+
    
    
    
    /*
-   
-   
-   
    
    //testing output
    
@@ -683,17 +549,17 @@ int main(int argc, const char * argv[])
          
          if (current)
          {
-            cout << current << " " ;
+            cout << current->visitedTimes << " " ;
          }
          else
          {
-            cout << "               " ;
+            cout << "   " ;
          }
          
       }
       cout << '\n' ;
    }
-   /*
+   
    
 
    for (int i = 0; i < rows; i++)
@@ -706,7 +572,7 @@ int main(int argc, const char * argv[])
          {
             if(current->backs.size() > 0)
             {
-               cout << current->backs.front() << " "  ;
+               cout << current->backs[0] << " "  ;
                //cout << current->backSteps << "  "  ;
             }
             else
@@ -723,7 +589,7 @@ int main(int argc, const char * argv[])
       cout << '\n' ;
    }
    
-   */
+   
    
    for (int i = 0; i < rows; i++)
    {
@@ -737,7 +603,7 @@ int main(int argc, const char * argv[])
          }
          else
          {
-            cout << "  " ;
+            cout << "               " ;
          }
          
       }
@@ -746,15 +612,17 @@ int main(int argc, const char * argv[])
    
    
    
-   /*
+   
    for (int i = 0 ; i < floorNodes[10][7]->ups.size() ; i++)
    {
       cout << floorNodes[10][7]->ups[i] << endl ;
    }
    */
    
+
    
-   cout << totalZeros << endl << totalSteps << endl ;
+   cout << "0's left: " << totalZeros << endl
+        << "Steps:    " << totalSteps << endl << endl ;
    
    
    
