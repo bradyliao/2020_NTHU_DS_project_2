@@ -58,7 +58,6 @@ int main(int argc, const char * argv[])
       infile.get() ;
       cout << rows << " " << columns << " " << battery << endl ;
       
-      
       floorOriginal = new int*[rows] ;
 
       for (int i = 0; i < rows ; i++)
@@ -379,10 +378,10 @@ int main(int argc, const char * argv[])
    while (totalZeros > 0)
    {
       
-      
+      cout << currentStep->row << "  "<< currentStep->column<< "  " << currentBattery << "  " << currentStep->backSteps << endl ;
       //test
       //cout << totalZeros << endl ;
-      cout << totalSteps << endl ;
+      //cout << totalSteps << endl ;
       //cout << totalZeros << "  " << totalSteps << endl ;
       
       
@@ -395,10 +394,13 @@ int main(int argc, const char * argv[])
       
       if (backToLastEndPoint)
       {
+         
+         backToLastEndPointPath.pop() ;
          while (!backToLastEndPointPath.empty())
          {
             currentStep = backToLastEndPointPath.top() ;
-            
+            cout << currentStep->row << "  "<< currentStep->column<< "  " << currentBattery << "  " << currentStep->backSteps << endl ;
+
             path.push_back(currentStep) ;
             currentStep->visitedTimes ++ ;
             totalSteps ++ ;
@@ -406,8 +408,7 @@ int main(int argc, const char * argv[])
             
             backToLastEndPointPath.pop() ;
          }
-         currentStep->visitedTimes -- ;
-         path.pop_back() ;
+         
 
          
          
@@ -433,7 +434,7 @@ int main(int argc, const char * argv[])
       
       
       
-      if (currentBattery == currentStep->backSteps)
+      if (currentBattery - 1 == currentStep->backSteps)
       {
          
          
@@ -450,7 +451,8 @@ int main(int argc, const char * argv[])
             if (backToLastEndPoint)
                backToLastEndPointPath.push(currentStep) ;
             
-            
+            cout << currentStep->row << "  "<< currentStep->column<< "  " << currentBattery << "  " << currentStep->backSteps << endl ;
+
             if (currentStep->status == 0)
                totalZeros-- ;
             
@@ -458,14 +460,17 @@ int main(int argc, const char * argv[])
             currentStep->status = 2 ;
             
 
+            nextStep = currentStep->backs[0] ;
+            
             for (int i = 0; i < currentStep->backs.size() ; i++)
             {
-               if (currentStep->backs[i]->status == 0)
+               if (currentStep->backs[i]->backSteps < currentStep->backs[0]->backSteps)
                {
                   nextStep = currentStep->backs[i] ;
                   break ;
                }
             }
+            
             
             if (nextStep)
             {
@@ -473,6 +478,7 @@ int main(int argc, const char * argv[])
                nextStep = NULL ;
                totalSteps ++ ;
                currentBattery -- ;
+               path.push_back(currentStep) ;
                continue ;
             }
             else
@@ -481,6 +487,8 @@ int main(int argc, const char * argv[])
                nextStep = NULL ;
                totalSteps ++ ;
                currentBattery -- ;
+               path.push_back(currentStep) ;
+
                continue ;
             }
          }
@@ -491,7 +499,8 @@ int main(int argc, const char * argv[])
          
          if (currentStep == root)
          {
-            path.push_back(currentStep) ;
+            path.pop_back() ;
+            //path.push_back(currentStep) ;
             continue ;
          }
          
@@ -659,10 +668,10 @@ int main(int argc, const char * argv[])
    
    
    
-   
-   
-   
    /*
+   
+   
+   
    
    //testing output
    
@@ -684,7 +693,7 @@ int main(int argc, const char * argv[])
       }
       cout << '\n' ;
    }
-   
+   /*
    
 
    for (int i = 0; i < rows; i++)
@@ -722,9 +731,9 @@ int main(int argc, const char * argv[])
       {
          current = floorNodes[i][j] ;
          
-         if (current)
+         if (current->backs.size() > 0)
          {
-            cout << current->visitedTimes << " " ;
+            cout << current->backs[0] << " " ;
          }
          else
          {
@@ -746,6 +755,46 @@ int main(int argc, const char * argv[])
    
    
    cout << totalZeros << endl << totalSteps << endl ;
+   
+   
+   
+   
+   
+   
+   
+   ofstream output ;
+   output.open("final.path", ios::trunc) ;
+   
+   if (output.is_open())
+   {
+      
+      output << totalSteps << endl ;
+      
+      
+      for (int i = 0; i < path.size() ; i++)
+      {
+         output << path[i]->row << " " << path[i]->column << endl ;
+      }
+      
+      output.close() ;
+      
+      cout << "The result is output to the file name: " << "final.path" << endl ;
+   }
+   else
+   {
+      cout << "Unable to output file." << endl ;
+   }
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
    return 0;
 }
 
